@@ -157,14 +157,23 @@ scripts:
       scope: 'datadog_flutter_plugin'
 
   integration_test:web:
-    run: melos integration_test:web:main
+    run: melos integration_test:web:main && melos integration_test:web:other
 
   integration_test:web:main:
     exec: |
       cd integration_test_app
-      dart ./bin/web_integration_tests.dart
+      dart $MELOS_ROOT_PATH/tools/ci/bin/web_integration_tests.dart
     packageFilters:
       scope: 'datadog_flutter_plugin'
+
+  integration_test:web:other:
+    exec: 
+      concurrency: 1
+    run: |
+      cd example      
+      dart $MELOS_ROOT_PATH/tools/ci/bin/web_integration_tests.dart
+    packageFilters:
+      scope: 'datadog_tracking_http_client'
 
   e2e_tests:ios:
     exec: |

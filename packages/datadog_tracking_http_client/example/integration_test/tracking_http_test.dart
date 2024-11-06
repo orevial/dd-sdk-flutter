@@ -2,7 +2,6 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2019-2022 Datadog, Inc.
 
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:datadog_common_test/datadog_common_test.dart';
@@ -11,6 +10,7 @@ import 'package:datadog_tracking_http_client_example/scenario_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'common.dart';
 import 'tracing_id_helpers.dart';
 
 Future<void> performRumUserFlow(WidgetTester tester) async {
@@ -33,9 +33,7 @@ Future<void> performRumUserFlow(WidgetTester tester) async {
 void main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  final mockHttpServer = RecordingHttpServer();
-  unawaited(mockHttpServer.start());
-  final sessionRecorder = LocalRecordingServerClient(mockHttpServer);
+  final sessionRecorder = await startMockServer();
 
   testWidgets('test auto instrumentation', (WidgetTester tester) async {
     await sessionRecorder.startNewSession();

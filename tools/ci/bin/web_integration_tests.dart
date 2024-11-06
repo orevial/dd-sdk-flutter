@@ -22,6 +22,8 @@ const fileExclude = [
   'rum_kiosk_test.dart',
   // Web does not yet support mapping
   'rum_mapping_test.dart',
+  // Not a test
+  'tracing_id_helpers.dart',
 ];
 
 const testDriver = 'test_driver/integration_test.dart';
@@ -53,7 +55,7 @@ void main() async {
       ];
       final chromeExecutable = Platform.environment['CHROME_EXECUTABLE'];
       if (chromeExecutable != null) {
-        args.add('--chrome-binary=$chromeExecutable');        
+        args.add('--chrome-binary=$chromeExecutable');
       }
       print('flutter ${args.join(' ')}');
       final process = await Process.start('flutter', args);

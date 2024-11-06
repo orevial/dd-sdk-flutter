@@ -13,7 +13,7 @@ import 'common.dart';
 import 'tracing_id_helpers.dart';
 
 Future<void> performRumUserFlow(WidgetTester tester) async {
-  var scenario = find.text('HttpClient (dart:io) Override');
+  var scenario = find.text('Dio Usage');
   await tester.tap(scenario);
   await tester.pumpAndSettle();
 

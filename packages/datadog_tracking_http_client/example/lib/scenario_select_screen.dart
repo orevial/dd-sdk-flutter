@@ -24,6 +24,13 @@ class ScenarioSelectScreen extends StatelessWidget {
     ));
   }
 
+  void _onSelectDio(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      settings: const RouteSettings(name: 'rum_dio_instrumentation'),
+      builder: (context) => const RumHttpInstrumentationScenario(),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +47,10 @@ class ScenarioSelectScreen extends StatelessWidget {
             ListTile(
               title: const Text('http.Client Override'),
               onTap: () => _onSelectHttp(context),
+            ),
+            ListTile(
+              title: const Text('Dio Usage'),
+              onTap: () => _onSelectDio(context),
             ),
           ],
         ),
