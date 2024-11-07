@@ -24,6 +24,8 @@ const fileExclude = [
   'rum_mapping_test.dart',
   // Not a test
   'tracing_id_helpers.dart',
+  // Web does not support dart:io clients
+  'tracking_http_client_test.dart',
 ];
 
 const testDriver = 'test_driver/integration_test.dart';

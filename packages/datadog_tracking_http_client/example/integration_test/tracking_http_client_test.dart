@@ -29,13 +29,11 @@ Future<void> performRumUserFlow(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-void main() async {
+void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  final sessionRecorder = await startMockServer();
-
   testWidgets('test auto instrumentation', (WidgetTester tester) async {
-    await sessionRecorder.startNewSession();
+    final sessionRecorder = await startMockServer();
 
     const clientToken = bool.hasEnvironment('DD_CLIENT_TOKEN')
         ? String.fromEnvironment('DD_CLIENT_TOKEN')
@@ -48,9 +46,9 @@ void main() async {
       firstPartyHosts: [(sessionRecorder.sessionEndpoint)],
       firstPartyGetUrl: '${sessionRecorder.sessionEndpoint}/integration_get',
       firstPartyPostUrl: '${sessionRecorder.sessionEndpoint}/integration_post',
-      firstPartyBadUrl: 'https://foo.bar',
-      thirdPartyGetUrl: 'https://httpbin.org/get',
-      thirdPartyPostUrl: 'https://httpbin.org/post',
+      firstPartyBadUrl: 'https://foo.bar/',
+      thirdPartyGetUrl: 'https://httpbin.org/get/',
+      thirdPartyPostUrl: 'https://httpbin.org/post/',
       enableIoHttpTracking: true,
     );
     RumAutoInstrumentationScenarioConfig.instance = scenarioConfig;
@@ -74,7 +72,10 @@ void main() async {
         requestLog.addAll(requests);
         for (var request in requests) {
           if (request.requestedUrl.contains('integration')) {
-            testRequests.add(request);
+            if (!request.requestHeaders
+                .containsKey('access-control-request-method')) {
+              testRequests.add(request);
+            }
           } else {
             request.data.split('\n').forEach((e) {
               var jsonValue = json.decode(e);
@@ -139,16 +140,18 @@ void main() async {
     expect(view2.errorEvents[0].resourceUrl, scenarioConfig.firstPartyBadUrl);
     expect(view2.errorEvents[0].resourceMethod, 'GET');
 
-    expect(view2.resourceEvents[2].url, scenarioConfig.thirdPartyGetUrl);
-    expect(view2.resourceEvents[2].method, 'GET');
-    expect(view2.resourceEvents[2].duration, greaterThan(0));
-    expect(view2.resourceEvents[2].dd.traceId, isNull);
-    expect(view2.resourceEvents[2].dd.spanId, isNull);
+    final firstThirdPartyResource = view2.resourceEvents[2];
+    expect(firstThirdPartyResource.url, scenarioConfig.thirdPartyGetUrl);
+    expect(firstThirdPartyResource.method, 'GET');
+    expect(firstThirdPartyResource.duration, greaterThan(0));
+    expect(firstThirdPartyResource.dd.traceId, isNull);
+    expect(firstThirdPartyResource.dd.spanId, isNull);
 
-    expect(view2.resourceEvents[3].url, scenarioConfig.thirdPartyPostUrl);
-    expect(view2.resourceEvents[3].method, 'POST');
-    expect(view2.resourceEvents[3].duration, greaterThan(0));
-    expect(view2.resourceEvents[3].dd.traceId, isNull);
-    expect(view2.resourceEvents[3].dd.spanId, isNull);
+    final secondThirdPartyResource = view2.resourceEvents[3];
+    expect(secondThirdPartyResource.url, scenarioConfig.thirdPartyPostUrl);
+    expect(secondThirdPartyResource.method, 'POST');
+    expect(secondThirdPartyResource.duration, greaterThan(0));
+    expect(secondThirdPartyResource.dd.traceId, isNull);
+    expect(secondThirdPartyResource.dd.spanId, isNull);
   });
 }

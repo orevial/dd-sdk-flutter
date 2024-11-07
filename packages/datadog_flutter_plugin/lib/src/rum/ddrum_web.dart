@@ -36,11 +36,17 @@ class DdRumWeb extends DdRumPlatform {
       allowedTracingUrls: [
         for (final host in sanitizedFirstPartyHosts)
           _TracingUrl(
-            match: host.regExp.toJs(),
+            match: ((String check) {
+              final uri = Uri.parse(check);
+              return host.regExp.hasMatch(uri.host);
+            }).toJS,
             propagatorTypes:
                 host.headerTypes.map(_headerTypeToPropagatorType).toList().toJS,
           )
       ].toJS,
+      traceSampleRate: rumConfiguration.traceSampleRate,
+      traceContextInjection:
+          _contextInjectionString(rumConfiguration.traceContextInjection),
       trackViewsManually: true,
       trackResources: trackResources,
       trackFrustrations: rumConfiguration.trackFrustrations,
@@ -211,13 +217,22 @@ JSString _headerTypeToPropagatorType(TracingHeaderType type) {
   }
 }
 
+String _contextInjectionString(TraceContextInjection contextInjection) {
+  switch (contextInjection) {
+    case TraceContextInjection.all:
+      return 'all';
+    case TraceContextInjection.sampled:
+      return 'sampled';
+  }
+}
+
 @anonymous
 extension type _TracingUrl._(JSObject _) implements JSObject {
   external JSRegExp match;
   external JSArray propagatorTypes;
 
   external factory _TracingUrl({
-    JSRegExp match,
+    JSFunction match,
     JSArray propagatorTypes,
   });
 }
@@ -260,6 +275,8 @@ extension type _RumInitOptions._(JSObject _) implements JSObject {
     bool? silentMultipleInit,
     String? proxy,
     JSArray allowedTracingUrls,
+    num? traceSampleRate,
+    String? traceContextInjection,
     JSArray enableExperimentalFeatures,
   });
 }

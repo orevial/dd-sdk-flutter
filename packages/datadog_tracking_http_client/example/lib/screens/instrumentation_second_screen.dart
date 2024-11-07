@@ -3,21 +3,24 @@
 // Copyright 2019-2022 Datadog, Inc.
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
+import '../clients/abstract_client.dart';
 import '../scenario_config.dart';
-import 'rum_http_client_instrumentation_third_screen.dart';
+import 'instrumentation_third_screen.dart';
 
-class RumHttpClientInstrumentationSecondScreen extends StatefulWidget {
-  const RumHttpClientInstrumentationSecondScreen({Key? key}) : super(key: key);
+class InstrumentationSecondScreen extends StatefulWidget {
+  final AbstractClient client;
+
+  const InstrumentationSecondScreen({Key? key, required this.client})
+      : super(key: key);
 
   @override
-  State<RumHttpClientInstrumentationSecondScreen> createState() =>
-      _RumHttpClientInstrumentationSecondScreenState();
+  State<InstrumentationSecondScreen> createState() =>
+      _InstrumentationSecondScreenState();
 }
 
-class _RumHttpClientInstrumentationSecondScreenState
-    extends State<RumHttpClientInstrumentationSecondScreen> {
+class _InstrumentationSecondScreenState
+    extends State<InstrumentationSecondScreen> {
   late Future _loadingFuture;
   late RumAutoInstrumentationScenarioConfig _config;
   var currentStatus = 'Starting fetch';
@@ -30,20 +33,25 @@ class _RumHttpClientInstrumentationSecondScreenState
   }
 
   Future<void> _fetchResources() async {
+    // This is only for the sake of integration tests. Without it, Flutter
+    // switches routes and starts loading images prior to `pumpAndSettle`
+    // allowing sending the view change to RUM.
+    await Future.delayed(const Duration(milliseconds: 10));
+
     // First Party Hosts
-    await http.get(Uri.parse(_config.firstPartyGetUrl));
+    await widget.client.get(Uri.parse(_config.firstPartyGetUrl));
     if (_config.firstPartyPostUrl != null) {
       setState(() {
         currentStatus = 'Post First Party';
       });
-      await http.post(Uri.parse(_config.firstPartyPostUrl!));
+      await widget.client.post(Uri.parse(_config.firstPartyPostUrl!));
     }
 
     setState(() {
       currentStatus = 'Get First Party - Bad Request';
     });
     try {
-      await http.get(Uri.parse(_config.firstPartyBadUrl));
+      await widget.client.get(Uri.parse(_config.firstPartyBadUrl));
     } catch (e) {
       // ignore: avoid_print
       print('Request failed: $e');
@@ -52,12 +60,14 @@ class _RumHttpClientInstrumentationSecondScreenState
     setState(() {
       currentStatus = 'Third party get';
     });
-    await http.get(Uri.parse(_config.thirdPartyGetUrl));
+    await widget.client.get(Uri.parse(_config.thirdPartyGetUrl));
 
     setState(() {
       currentStatus = 'Third party post';
     });
-    await http.post(Uri.parse(_config.thirdPartyPostUrl));
+    await widget.client.post(Uri.parse(_config.thirdPartyPostUrl));
+
+    await Future.delayed(const Duration(milliseconds: 100));
   }
 
   @override
@@ -102,7 +112,7 @@ class _RumHttpClientInstrumentationSecondScreenState
     Navigator.of(context).push(
       MaterialPageRoute(
         settings: const RouteSettings(name: 'rum_io_third_screen'),
-        builder: (_) => const RumHttpClientInstrumentationThirdScreen(),
+        builder: (_) => const InstrumentationThirdScreen(),
       ),
     );
   }

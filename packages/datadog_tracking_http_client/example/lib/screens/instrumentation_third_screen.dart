@@ -1,23 +1,22 @@
 // Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
-// Copyright 2022-Present Datadog, Inc.
-
+// Copyright 2019-2022 Datadog, Inc.
 import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:flutter/material.dart';
 
-class RumDioInstrumentationThirdScreen extends StatefulWidget {
-  const RumDioInstrumentationThirdScreen({Key? key}) : super(key: key);
+class InstrumentationThirdScreen extends StatefulWidget {
+  const InstrumentationThirdScreen({Key? key}) : super(key: key);
 
   @override
-  State<RumDioInstrumentationThirdScreen> createState() =>
-      _RumDioInstrumentationThirdScreenState();
+  State<InstrumentationThirdScreen> createState() =>
+      _InstrumentationThirdScreenState();
 }
 
-class _RumDioInstrumentationThirdScreenState
-    extends State<RumDioInstrumentationThirdScreen> {
+class _InstrumentationThirdScreenState extends State<InstrumentationThirdScreen>
+    with RouteAware, DatadogRouteAwareMixin {
   @override
-  void initState() {
-    super.initState();
+  void didPush() {
+    super.didPush();
 
     DatadogSdk.instance.rum?.addTiming('content-ready');
   }
