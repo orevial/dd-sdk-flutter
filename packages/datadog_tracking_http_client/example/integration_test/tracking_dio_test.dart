@@ -98,10 +98,14 @@ void main() {
     expect(session.visits.length, greaterThanOrEqualTo(3));
 
     final view1 = session.visits[1];
-    // Images are not fetched with Dop, so we don't expect them in
-    // the final view on mobile
-    if (!kIsWeb) {
-      expect(view1.viewEvents.last.view.resourceCount, 0);
+    expect(view1.viewEvents.last.view.resourceCount, 2);
+    // After redirects, we don't end up with a picsum.photos url.
+    expect(view1.resourceEvents[0].url.contains('picsum.photos'), isTrue);
+    expect(view1.resourceEvents[1].url,
+        'https://imgix.datadoghq.com/img/about/presskit/kit/press_kit.png');
+    // Allow this to fail since we don't have as much control over them
+    if (view1.resourceEvents[1].statusCode == 200) {
+      expect(view1.resourceEvents[1].resourceType, kIsWeb ? 'xhr' : 'image');
     }
 
     final view2 = session.visits[2];
