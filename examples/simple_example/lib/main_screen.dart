@@ -9,8 +9,8 @@ import 'screens/named_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -18,7 +18,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   void _goToPage(String page) {
-    context.go(page);
+    context.push(page);
   }
 
   Widget _paddedNavButton(String text, String page) {
@@ -51,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -130,7 +130,34 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
       },
-      routeSettings: RouteSettings(name: 'Download Dialog'),
+      routeSettings: const RouteSettings(name: 'Download Dialog'),
+    );
+  }
+
+  void _openBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      routeSettings: const RouteSettings(name: 'Bottomsheet Dialog'),
+      builder: (context) {
+        return SafeArea(
+          child: Row(
+            children: [
+              IconButton(
+                  key: const Key('REJECT BY ICON'),
+                  icon: const Icon(Icons.close),
+                  onPressed: () {}),
+              IconButton(
+                key: const Key('ACCEPT BY ICON KEY'),
+                icon: const Icon(Icons.done),
+                tooltip: 'MODAL ACCEPT BY ICON',
+                onPressed: () => {
+                  context.pop(),
+                },
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -158,6 +185,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => _openDialog(context),
               child: const Text('Open Dialog'),
+            ),
+            ElevatedButton(
+              onPressed: () => _openBottomSheet(context),
+              child: const Text('Open Bottom Sheet'),
             ),
           ],
         ),
