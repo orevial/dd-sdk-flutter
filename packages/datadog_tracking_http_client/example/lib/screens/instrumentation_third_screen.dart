@@ -4,16 +4,15 @@
 import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:flutter/material.dart';
 
-class RumHttpClientInstrumentationThirdScreen extends StatefulWidget {
-  const RumHttpClientInstrumentationThirdScreen({Key? key}) : super(key: key);
+class InstrumentationThirdScreen extends StatefulWidget {
+  const InstrumentationThirdScreen({Key? key}) : super(key: key);
 
   @override
-  State<RumHttpClientInstrumentationThirdScreen> createState() =>
-      _RumHttpClientInstrumentationThirdScreenState();
+  State<InstrumentationThirdScreen> createState() =>
+      _InstrumentationThirdScreenState();
 }
 
-class _RumHttpClientInstrumentationThirdScreenState
-    extends State<RumHttpClientInstrumentationThirdScreen>
+class _InstrumentationThirdScreenState extends State<InstrumentationThirdScreen>
     with RouteAware, DatadogRouteAwareMixin {
   @override
   void didPush() {
