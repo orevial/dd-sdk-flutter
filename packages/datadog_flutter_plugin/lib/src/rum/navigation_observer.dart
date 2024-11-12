@@ -40,16 +40,9 @@ typedef ViewInfoExtractor = RumViewInfo? Function(Route<dynamic> route);
 /// a name, it returns a [RumViewInfo] with the supplied name. Otherwise it returns
 /// `null`.
 RumViewInfo? defaultViewInfoExtractor(Route<dynamic> route) {
-  if (route is PageRoute) {
-    var name = route.settings.name;
-    if (name != null) {
-      return RumViewInfo(name: name);
-    }
-  } else if (route is DialogRoute) {
-    var name = route.settings.name;
-    if (name != null) {
-      return RumViewInfo(name: name);
-    }
+  var name = route.settings.name;
+  if (name != null) {
+    return RumViewInfo(name: name);
   }
 
   return null;
