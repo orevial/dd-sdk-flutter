@@ -1,4 +1,4 @@
-package com.example.datadog.inappwebview_tracking
+package com.datadoghq.flutter.inappwebview_tracking
 
 import androidx.annotation.NonNull
 

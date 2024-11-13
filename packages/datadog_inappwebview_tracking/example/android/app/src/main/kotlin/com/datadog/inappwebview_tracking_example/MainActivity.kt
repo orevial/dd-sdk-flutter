@@ -1,4 +1,4 @@
-package com.example.datadog_inappwebview_tracking_example
+package com.datadog.inappwebview_tracking_example
 
 import io.flutter.embedding.android.FlutterActivity
 

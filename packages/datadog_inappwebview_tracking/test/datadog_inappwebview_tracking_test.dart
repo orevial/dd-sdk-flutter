@@ -1,31 +1,19 @@
-import 'package:datadog_inappwebview_tracking/datadog_inappwebview_tracking.dart';
-import 'package:datadog_inappwebview_tracking/datadog_inappwebview_tracking_method_channel.dart';
-import 'package:datadog_inappwebview_tracking/datadog_inappwebview_tracking_platform_interface.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2024-Present Datadog, Inc.
 
-class MockDatadogInAppWebviewTrackingPlatform
-    with MockPlatformInterfaceMixin
-    implements DatadogInAppWebviewTrackingPlatform {
-  @override
-  Future<String?> getPlatformVersion() => Future.value('42');
-}
+import 'package:datadog_inappwebview_tracking/src/datadog_inappwebview_tracking_method_channel.dart';
+import 'package:datadog_inappwebview_tracking/src/datadog_inappwebview_tracking_platform_interface.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final DatadogInAppWebviewTrackingPlatform initialPlatform =
-      DatadogInAppWebviewTrackingPlatform.instance;
+  final DatadogInAppWebViewTrackingPlatform initialPlatform =
+      DatadogInAppWebViewTrackingPlatform.instance;
 
-  test('$MethodChannelDatadogInappwebviewTracking is the default instance', () {
+  test(
+      '$MethodChannelDatadogInAppWebViewTracking is the default platform instance',
+      () {
     expect(initialPlatform,
-        isInstanceOf<MethodChannelDatadogInappwebviewTracking>());
-  });
-
-  test('getPlatformVersion', () async {
-    DatadogInappwebviewTracking datadogInappwebviewTrackingPlugin =
-        DatadogInappwebviewTracking();
-    final fakePlatform = MockDatadogInAppWebviewTrackingPlatform();
-    DatadogInAppWebviewTrackingPlatform.instance = fakePlatform;
-
-    expect(await datadogInappwebviewTrackingPlugin.getPlatformVersion(), '42');
+        isInstanceOf<MethodChannelDatadogInAppWebViewTracking>());
   });
 }

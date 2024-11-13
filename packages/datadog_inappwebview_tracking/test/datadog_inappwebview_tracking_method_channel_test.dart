@@ -1,27 +1,52 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2024-Present Datadog, Inc.
+import 'dart:math';
+
+import 'package:datadog_common_test/datadog_common_test.dart';
+import 'package:datadog_inappwebview_tracking/src/datadog_inappwebview_tracking_method_channel.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:datadog_inappwebview_tracking/datadog_inappwebview_tracking_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelDatadogInappwebviewTracking platform = MethodChannelDatadogInappwebviewTracking();
+  MethodChannelDatadogInAppWebViewTracking platform =
+      MethodChannelDatadogInAppWebViewTracking();
   const MethodChannel channel = MethodChannel('datadog_inappwebview_tracking');
 
+  List<MethodCall> callLog = [];
+
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    callLog.clear();
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
-        return '42';
+        callLog.add(methodCall);
+        return null;
       },
     );
   });
 
-  tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+  test('sendMessage sends correct parameters to method channel', () {
+    final fakeMessage = randomString();
+    final fakeSampleRate = Random().nextDouble() * 100;
+    platform.sendWebViewMessage(fakeMessage, fakeSampleRate);
+
+    expect(callLog.length, 1);
+    final methodCall = callLog.first;
+    final arguments = methodCall.arguments;
+    expect(arguments is Map, isTrue);
+    if (arguments is Map) {
+      expect(arguments['message'], fakeMessage);
+      expect(arguments['logSampleRate'], fakeSampleRate);
+    }
   });
 
-  test('getPlatformVersion', () async {
-    expect(await platform.getPlatformVersion(), '42');
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
 }

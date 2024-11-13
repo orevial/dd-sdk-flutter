@@ -1,4 +1,4 @@
-package com.example.datadog.inappwebview_tracking
+package com.datadoghq.flutter.inappwebview_tracking
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

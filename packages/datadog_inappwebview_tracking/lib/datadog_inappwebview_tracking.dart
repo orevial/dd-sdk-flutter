@@ -1,14 +1,5 @@
-// You have generated a new plugin project without specifying the `--platforms`
-// flag. A plugin project with no platform support was generated. To add a
-// platform, run `flutter create -t plugin --platforms <platforms> .` under the
-// same directory. You can also find a detailed instruction on how to add
-// platforms in the `pubspec.yaml` at
-// https://flutter.dev/to/pubspec-plugin-platforms.
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2024-Present Datadog, Inc.
 
-import 'datadog_inappwebview_tracking_platform_interface.dart';
-
-class DatadogInappwebviewTracking {
-  Future<String?> getPlatformVersion() {
-    return DatadogInAppWebviewTrackingPlatform.instance.getPlatformVersion();
-  }
-}
+export 'src/datadog_inappwebview_user_script.dart';
