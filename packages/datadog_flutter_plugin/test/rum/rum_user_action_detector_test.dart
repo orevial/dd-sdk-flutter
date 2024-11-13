@@ -514,4 +514,30 @@ void main() {
     verify(() => mockRum.addAction(RumActionType.tap, 'Tab(Rainy Days)'));
     verifyNoMoreInteractions(mockRum);
   });
+
+  testWidgets('tap gesture detector with annotation reports attributes',
+      (tester) async {
+    final mockRum = MockDdRum();
+
+    final annotation = randomString();
+    final buttonText = randomString();
+    final attributes = {'test_key': randomString()};
+    await tester.pumpWidget(_buildSimpleApp(
+      mockRum,
+      RumUserActionAnnotation(
+        description: annotation,
+        attributes: attributes,
+        child: GestureDetector(
+          onTap: () {},
+          child: Text(buttonText),
+        ),
+      ),
+    ));
+
+    final text = find.byType(GestureDetector);
+    await tester.tap(text);
+
+    verify(() => mockRum.addAction(RumActionType.tap, any(), attributes));
+    verifyNoMoreInteractions(mockRum);
+  });
 }
