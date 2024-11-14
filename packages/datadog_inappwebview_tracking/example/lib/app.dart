@@ -6,7 +6,6 @@ import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'chrome_safari_example.dart';
 import 'inappbrowser_example.dart';
 import 'webview_example.dart';
 
@@ -33,12 +32,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return const InAppBrowserExample();
         },
-      ),
-      GoRoute(
-          path: '/chrome',
-          builder: (context, state) {
-            return const ChromeSafariExample();
-          })
+      )
     ],
   );
 
@@ -88,7 +82,6 @@ class _HomeState extends State<Home> {
           children: [
             _paddedNavItem('WebView Example', '/webview'),
             _paddedNavItem('InAppBrowser Example', '/browser'),
-            _paddedNavItem('ChromeSafari Example', '/crhome'),
           ],
         ),
       ),

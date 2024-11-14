@@ -19,8 +19,6 @@ class WebviewExample extends StatefulWidget {
 class _WebviewExampleState extends State<WebviewExample> {
   final GlobalKey _webViewKey = GlobalKey();
 
-  InAppWebViewController? _webViewController;
-
   @override
   void initState() {
     super.initState();
@@ -46,8 +44,7 @@ class _WebviewExampleState extends State<WebviewExample> {
           isInspectable: kDebugMode,
         ),
         onWebViewCreated: (controller) async {
-          _webViewController = controller
-            ..trackDatadogEvents(DatadogSdk.instance);
+          controller.trackDatadogEvents(DatadogSdk.instance);
         },
       )),
     );

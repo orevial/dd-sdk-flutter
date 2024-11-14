@@ -34,7 +34,7 @@ Future<RecordingServerClient> startMockServer() async {
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('test inappwebview integration', (WidgetTester tester) async {
+  testWidgets('test inappbrowser integration', (WidgetTester tester) async {
     var serverRecorder = await startMockServer();
     app.customEndpoint = serverRecorder.sessionEndpoint;
 
@@ -43,7 +43,12 @@ void main() {
     await tester.pumpAndSettle();
     var button = find.byWidgetPredicate((widget) =>
         widget is Text &&
-        (widget.data?.startsWith('WebView Example') ?? false));
+        (widget.data?.startsWith('InAppBrowser Example') ?? false));
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    button = find.byWidgetPredicate((widget) =>
+        widget is Text &&
+        (widget.data?.startsWith('Open InAppBrowser') ?? false));
     await tester.tap(button);
     await tester.pumpAndSettle();
 

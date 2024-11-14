@@ -3,6 +3,8 @@ version = "1.0-SNAPSHOT"
 
 buildscript {
     ext.kotlin_version = "1.8.22"
+    ext.datadog_version = "2+"
+
     repositories {
         google()
         mavenCentral()
@@ -50,6 +52,9 @@ android {
     }
 
     dependencies {
+        implementation "com.datadoghq:dd-sdk-android-webview:$datadog_version"
+        implementation "com.google.code.gson:gson:2.8.8"
+
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
     }

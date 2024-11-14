@@ -39,6 +39,10 @@ Future<void> main() async {
           )
         : null,
   );
+  // This is only needed for interation testing, as the mock server doesn't support https
+  if (customEndpoint != null) {
+    configuration.additionalConfig['_dd.needsClearTextHttp'] = true;
+  };
 
   await DatadogSdk.runApp(configuration, TrackingConsent.granted, () async {
     runApp(MyApp());

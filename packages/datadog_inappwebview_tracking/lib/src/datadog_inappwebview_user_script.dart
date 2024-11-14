@@ -21,8 +21,17 @@ String _createBridgeSource(
   String bridgeSource = '''
 /* DatadogEventBridge */
 window.DatadogEventBridge = {
+  cache: [],
   send(msg) {
-    window.$bridgeName.callHandler('$handlerName', msg)
+    if (window.$bridgeName) {
+      if (this.cache.length > 0) {
+        this.cache.forEach((e) => window.$bridgeName.callHandler('$handlerName', msg))
+        this.cache = []
+      }
+      window.$bridgeName.callHandler('$handlerName', msg)
+    } else {
+      this.cache.push(msg)
+    }
   },
   getAllowedWebViewHosts() {
       return '[$allowedWebViewHostsString]'
@@ -39,6 +48,17 @@ window.DatadogEventBridge = {
   return bridgeSource;
 }
 
+/// Used to connect the Datadog Browser SDK with the mobile SDK. Must be installed into the
+/// `initialUserScripts` constructor parameter of [InAppBrowser] or [InAppWebView].  Once this
+/// script is installed, make sure to call [DatadogInAppWebViewControllerExtension.trackDatadogEvents]
+/// to finalize setting up the bridge between the browser and Datadog.
+///
+/// The Datadog Browser SDK will only forward information for the provided [allowedHosts]. This should the
+/// set of host names that you want to track without schemas or wildcards. For example:
+///
+/// ```dart
+/// allowedHosts: { 'shopist.io', 'datadoghq.com' }
+/// ```
 class DatadogInAppWebViewUserScript extends UserScript {
   DatadogInAppWebViewUserScript({
     required DatadogSdk datadog,
@@ -51,6 +71,8 @@ class DatadogInAppWebViewUserScript extends UserScript {
 }
 
 extension DatadogInAppWebViewControllerExtension on InAppWebViewController {
+  /// Sets up message handling between the WebView and Datadog's Mobile SDKs. Must be called
+  /// as soon as possible after creation of a `InAppWebViewController`
   void trackDatadogEvents(DatadogSdk datadog, {double logSampleRate = 100.0}) {
     addJavaScriptHandler(
       handlerName: handlerName,
