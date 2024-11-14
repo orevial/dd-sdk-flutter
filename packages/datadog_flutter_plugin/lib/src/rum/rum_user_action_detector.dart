@@ -59,6 +59,17 @@ class _ElementDescription {
 /// Flutter widgets, including [ElevatedButton], [TextButton],
 /// [CupertinoButton], [BottomNavigationBar], [TabBar], [InkWell], and
 /// [GestureDetector].
+/// You can also provide a custom detection logic by passing [customGestureDetector]
+/// parameter to detect your custom tappable widgets. Example:
+///
+/// ```dart
+/// customGestureDetector: (widget) {
+///    if (widget is CustomButton) {
+///      return RumGestureDetectorInfo('CustomButton');
+///    }
+///    return null;
+/// }
+/// ```
 ///
 /// For most Button types, the detector will look for a [Text] widget child,
 /// which it will use for the description of the action. In other cases, it will
@@ -79,10 +90,14 @@ class RumUserActionDetector extends StatefulWidget {
   /// The Widget tree to detect gestures in.
   final Widget child;
 
+  /// A function that provides custom gesture detection logic.
+  final CustomGestureElementDetector? customGestureDetector;
+
   const RumUserActionDetector({
     super.key,
     required this.rum,
     required this.child,
+    this.customGestureDetector,
   });
 
   @override
@@ -290,7 +305,14 @@ class _RumUserActionDetectorState extends State<RumUserActionDetector> {
     String? elementName;
     bool searchForBetter = false;
     bool searchForText = true;
-    if (widget is ButtonStyleButton) {
+
+    final customWidgetDetected =
+        this.widget.customGestureDetector?.call(widget);
+    if (customWidgetDetected != null) {
+      elementName = customWidgetDetected.elementName;
+      searchForBetter = customWidgetDetected.searchForBetter;
+      searchForText = customWidgetDetected.searchForText;
+    } else if (widget is ButtonStyleButton) {
       if (widget.enabled) {
         elementName = 'Button';
       }
@@ -437,3 +459,52 @@ class _RumTreeAnnotation {
 
   const _RumTreeAnnotation(this.description, [this.attributes]);
 }
+
+/// Contains information about a gesture-detectable element.
+///
+/// This class is used to describe custom elements that can trigger gesture
+/// detection logic. Each instance holds essential details for identifying
+/// and refining descriptions of tappable elements within the UI.
+@immutable
+class RumGestureDetectorInfo {
+  /// The name of the UI element e.g. "CustomButton"
+  final String elementName;
+
+  /// Indicates if additional refinement should be attempted by traversing
+  /// child elements, aiming to find a more descriptive element if available.
+  ///
+  /// If this parameter is set to `true`, the detector will continue searching
+  /// until a custom element returns `false` for `searchForBetter`, or until
+  /// RumUserActionDetector locates one of its supported gesture detectors
+  /// (that is not a GestureDetector or InkWell)
+  final bool searchForBetter;
+
+  /// Specifies whether to search for a `Text` widget within the element
+  /// subtree, allowing for a more informative label.
+  final bool searchForText;
+
+  const RumGestureDetectorInfo(this.elementName,
+      {this.searchForBetter = false, this.searchForText = true});
+}
+
+/// This function type allows you to define custom criteria for gesture detection
+/// within your widget tree. It accepts a `Widget` as input and returns
+/// a `RumGestureDetectorInfo` if the widget meets the specified criteria, or
+/// `null` otherwise.
+///
+/// This function is used by the [RumUserActionDetector] to detect custom gesture detectors.
+///
+/// Example use:
+/// ```dart
+/// RumUserActionDetector(
+///   customGestureDetector: (widget) {
+///      if (widget is CustomButton) {
+///        return RumGestureDetectorInfo('CustomButton');
+///      }
+///      return null;
+///    },
+///   // other fields...
+/// )
+/// ```
+typedef CustomGestureElementDetector = RumGestureDetectorInfo? Function(
+    Widget widget);
