@@ -84,6 +84,7 @@ scripts:
       # TODO: These packages should probably have platform unit tests
       ignore: 
         - 'datadog_webview_tracking'
+        - 'datadog_inappwebview_tracking'
 
   unit_test:android:
     exec:
@@ -95,6 +96,7 @@ scripts:
         - 'example/android'
       ignore:
         - 'datadog_webview_tracking'
+        - 'datadog_inappwebview_tracking'
 
   integration_test:ios:
     run: melos integration_test:ios:main && melos integration_test:ios:other

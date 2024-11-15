@@ -26,7 +26,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.datadoghq.flutter.inappwebview_tracking
+        package: com.datadoghq.flutter.inappwebviewtracking
         pluginClass: DatadogInAppWebViewTrackingPlugin
       ios:
         pluginClass: DatadogInAppWebViewTrackingPlugin

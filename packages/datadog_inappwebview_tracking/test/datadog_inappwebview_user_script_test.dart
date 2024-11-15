@@ -31,7 +31,16 @@ void main() {
 
     final lines = userScript.source.split('\n').map((e) => e.trim()).toList();
     final sendIndex = lines.indexOf('send(msg) {');
-    expect(lines[sendIndex + 1], contains('window.$bridgeName.callHandler'));
+    for (var i = sendIndex + 1; i < lines.length; ++i) {
+      // Expect all lines that access 'window.' in 'send()' to be accessing the bridge,
+      // and ensure that they've replaced the name properly.
+      final line = lines[i];
+      if (line == '},') break; // end of send function
+
+      if (line.contains('window.')) {
+        expect(lines[i], contains('window.$bridgeName'));
+      }
+    }
   });
 
   test('user script returns allowed hosts', () {

@@ -1,4 +1,4 @@
-group = "com.datadog.flutter.inappwebview_tracking"
+group = "com.datadoghq.flutter.inappwebviewtracking"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -28,7 +28,7 @@ apply plugin: "kotlin-android"
 
 android {
     if (project.android.hasProperty("namespace")) {
-        namespace = "com.datadoghq.flutter.inappwebview_tracking"
+        namespace = "com.datadoghq.flutter.inappwebviewtracking"
     }
 
     compileSdk = 34

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.datadog.inappwebview_tracking_example"
+    namespace = "com.datadoghq.inappwebviewtracking.example"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {        
-        applicationId = "com.datadog.inappwebview_tracking_example"
+        applicationId = "com.datadoghq.inappwebviewtracking.example"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
