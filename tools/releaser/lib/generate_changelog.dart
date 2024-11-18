@@ -45,7 +45,7 @@ class GenerateChangelogCommand extends Command {
 
         line = '## ${args.version}\n\n$versionChangelog';
         if (oldLine != null) {
-          line += '\n\n$oldLine';
+          line += '\n$oldLine';
         }
         didWriteChangelog = true;
       }
