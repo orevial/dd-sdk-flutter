@@ -55,9 +55,9 @@ void main() {
             .whereType<List<dynamic>>()
             .expand<dynamic>((e) => e)
             .whereType<Map<String, Object?>>()
-            // Ignore RUM sessions and telemetry
+            // Only include logs, ignore telemetry
             .where((e) {
-              return !(e).containsKey('session') && e['type'] != 'telemetry';
+              return e['message'] != null && e['type'] != 'telemetry';
             })
             .forEach((e) => logs.add(LogDecoder(e)));
         return logs.length >= 8;
