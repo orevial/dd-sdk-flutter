@@ -51,6 +51,8 @@ void main() {
         (widget.data?.startsWith('Open InAppBrowser') ?? false));
     await tester.tap(button);
     await tester.pumpAndSettle();
+    // Using pump stalls, but we still want to wait for the webview to load.
+    await Future.delayed(const Duration(seconds: 8));
 
     final requestLog = <RequestLog>[];
     final rumLog = <RumEventDecoder>[];

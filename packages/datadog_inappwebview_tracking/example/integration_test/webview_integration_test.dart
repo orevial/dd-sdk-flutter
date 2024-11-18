@@ -46,6 +46,7 @@ void main() {
         (widget.data?.startsWith('WebView Example') ?? false));
     await tester.tap(button);
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 3));
 
     final requestLog = <RequestLog>[];
     final rumLog = <RumEventDecoder>[];
