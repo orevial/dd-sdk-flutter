@@ -11,6 +11,16 @@ import 'package:mocktail/mocktail.dart';
 
 class MockDdRum extends Mock implements DatadogRum {}
 
+Widget _testWidgetBuilder(Widget? child) {
+  return SizedBox.square(
+    dimension: 5,
+    child: Container(
+      color: Colors.white,
+      child: child,
+    ),
+  );
+}
+
 class _DescriptiveWidget extends StatelessWidget {
   final Widget? child;
 
@@ -18,13 +28,7 @@ class _DescriptiveWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(
-      dimension: 5,
-      child: Container(
-        color: Colors.white,
-        child: child,
-      ),
-    );
+    return _testWidgetBuilder(child);
   }
 }
 
@@ -35,13 +39,7 @@ class _VagueWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(
-      dimension: 5,
-      child: Container(
-        color: Colors.white,
-        child: child,
-      ),
-    );
+    return _testWidgetBuilder(child);
   }
 }
 
@@ -688,6 +686,37 @@ void main() {
 
       verify(() => mockRum.addAction(
           RumActionType.tap, 'DescriptiveWidget($annotation)'));
+      verifyNoMoreInteractions(mockRum);
+    });
+
+    testWidgets('with annotation in subtree reports description',
+        (tester) async {
+      final mockRum = MockDdRum();
+
+      final annotation = randomString();
+      final attributes = {'test_key': randomString()};
+      await tester.pumpWidget(
+        _buildSimpleApp(
+          mockRum,
+          _VagueWidget(
+            child: RumUserActionAnnotation(
+              description: annotation,
+              attributes: attributes,
+              child: Semantics(
+                child: SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final text = find.byType(_VagueWidget);
+      await tester.tap(text);
+
+      verify(
+        () => mockRum.addAction(
+            RumActionType.tap, 'VagueWidget($annotation)', attributes),
+      );
       verifyNoMoreInteractions(mockRum);
     });
   });
