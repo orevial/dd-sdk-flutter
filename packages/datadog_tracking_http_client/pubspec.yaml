@@ -11,7 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  datadog_flutter_plugin: ^2.7.0
+  datadog_flutter_plugin:
+    path: ../datadog_flutter_plugin
   uuid: ^4.0.0
   http: ^1.0.0
 
