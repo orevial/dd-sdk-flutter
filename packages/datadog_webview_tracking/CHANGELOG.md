@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+## 2.0.3
 
+* Constrain to compatible versions of `datadog_flutter_plugin`
+
+## 2.0.2
+
+* Re-restrict `datadog_webview_plugin` version.
 
 ## 2.0.1
 
