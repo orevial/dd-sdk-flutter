@@ -195,12 +195,17 @@ class _RumUserActionDetectorState extends State<RumUserActionDetector> {
 
   _RumTreeAnnotation? _findElementInnerText(Element element, bool allowText) {
     String? elementDescription;
+    Map<String, Object?>? attributes;
 
     void visitor(Element element) {
       bool stopVisits = false;
 
       var widget = element.widget;
-      if (allowText && widget is Text) {
+      if (allowText && widget is RumUserActionAnnotation) {
+        elementDescription = widget.description;
+        attributes = widget.attributes;
+        stopVisits = true;
+      } else if (allowText && widget is Text) {
         if (widget.data?.isNotEmpty ?? false) {
           elementDescription = widget.data!;
           stopVisits = true;
@@ -224,7 +229,7 @@ class _RumUserActionDetectorState extends State<RumUserActionDetector> {
 
     element.visitChildren(visitor);
 
-    return _RumTreeAnnotation(elementDescription);
+    return _RumTreeAnnotation(elementDescription, attributes);
   }
 
   _ElementDescription? _getDetectingElementAtPosition(Offset position) {
