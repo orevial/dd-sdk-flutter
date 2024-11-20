@@ -6,7 +6,7 @@
 * Add ability to add custom attributes to `RumUserActionAnnotation`.
 * Extract route names from any base `Route`.
 * Fix distributed tracing for Web.
-* Fix WebView tracking on Android
+* Fix WebView tracking on Android.
 * Update iOS SDK to 2.20.0. For a full list of changes, see the [iOS Changelog](https://github.com/DataDog/dd-sdk-ios/blob/develop/CHANGELOG.md#2200--14-11-2024).
   * Fix race condition during consent change, preventing loss of events recorded on the current thread.
 * Update Android SDK to 2.15.1. For a full list of changes, see the [Android Changelog](https://github.com/DataDog/dd-sdk-android/blob/develop/CHANGELOG.md#2151--2024-11-04).
