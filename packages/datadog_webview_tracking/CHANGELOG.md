@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 2.1.0
+
+* Update constraints on compatible versions of `datadog-sdk-android-webview`.
 
 ## 2.0.3
 
