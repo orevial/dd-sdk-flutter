@@ -336,19 +336,19 @@ class _RumUserActionDetectorState extends State<RumUserActionDetector> {
       }
     } else if (widget is Tab) {
       elementName = 'Tab';
-    } else if (widget is BottomNavigationBar) {
-      if (widget.onTap != null) {
-        elementName = 'BottomNavigationBarItem';
-        // Special case, if there's not already a tree annotation, get
-        // the child gesture detector in the hit path and search through it for
-        // a description.
-        if (treeAnnotation == null) {
-          final detectorElement = _findGestureDetectorElement(element, targets);
-          if (detectorElement != null) {
-            treeAnnotation = _findElementInnerText(detectorElement, true);
-          }
-        }
-      }
+      // } else if (widget is BottomNavigationBar) {
+      //   if (widget.onTap != null) {
+      //     elementName = 'BottomNavigationBarItem';
+      //     // Special case, if there's not already a tree annotation, get
+      //     // the child gesture detector in the hit path and search through it for
+      //     // a description.
+      //     if (treeAnnotation == null) {
+      //       final detectorElement = _findGestureDetectorElement(element, targets);
+      //       if (detectorElement != null) {
+      //         treeAnnotation = _findElementInnerText(detectorElement, true);
+      //       }
+      //     }
+      //   }
     } else if (widget is Radio) {
       elementName = 'Radio';
       // If there's no tree annotation, use the value on the button
