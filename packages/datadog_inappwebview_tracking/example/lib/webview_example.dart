@@ -20,11 +20,6 @@ class _WebviewExampleState extends State<WebviewExample> {
   final GlobalKey _webViewKey = GlobalKey();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
