@@ -3,6 +3,7 @@
 // Copyright 2024-Present Datadog, Inc.
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:datadog_common_test/datadog_common_test.dart';
 import 'package:datadog_inappwebview_tracking_example/main.dart' as app;
@@ -32,6 +33,13 @@ Future<RecordingServerClient> startMockServer() async {
 }
 
 void main() {
+  if (Platform.isAndroid) {
+    // ignore: avoid_print
+    print(
+        'Skipping InAppBrowser tests for Android because of flutter_inappwebivew bug #1973');
+    return;
+  }
+
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('test inappbrowser integration', (WidgetTester tester) async {
@@ -52,7 +60,7 @@ void main() {
     await tester.tap(button);
     await tester.pumpAndSettle();
     // Using pump stalls, but we still want to wait for the webview to load.
-    await Future.delayed(const Duration(seconds: 8));
+    await Future.delayed(const Duration(seconds: 3));
 
     final requestLog = <RequestLog>[];
     final rumLog = <RumEventDecoder>[];
