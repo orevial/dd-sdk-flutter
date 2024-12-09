@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.10.0
+
+* Support for `datadog_inappwebview_tracking`. See [#624](https://github.com/DataDog/dd-sdk-flutter/issues/624).
+* Update Android SDK to 2.16.0. For a full list of changes, see the [Android Changelog](https://github.com/DataDog/dd-sdk-android/blob/develop/CHANGELOG.md#2160--2024-11-20).
+  * Add warning log when initializing the SDK outside the main process.
+  * Update Gradle to version 8.10.2.
+
 ## 2.9.0
 
 * Add ability to add custom gesture detectors to `RumUserActionDetector`.
