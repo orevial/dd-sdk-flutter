@@ -367,8 +367,7 @@ class _DatadogTrackingHttpRequest implements HttpClientRequest {
           }
         }
       }
-    } catch (e, st) {
-      print(e);
+    } catch (e, st) {      
       client.datadogSdk.internalLogger.sendToDatadog(
         '$DatadogTrackingHttpClient encountered an error while attempting '
         ' to track an _openUrl call: $e',
