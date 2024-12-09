@@ -34,7 +34,6 @@ PODS:
   - PLCrashReporter (1.11.2)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
-    - FlutterMacOS
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
@@ -42,7 +41,7 @@ DEPENDENCIES:
   - datadog_webview_tracking (from `.symlinks/plugins/datadog_webview_tracking/ios`)
   - Flutter (from `Flutter`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
@@ -67,10 +66,10 @@ EXTERNAL SOURCES:
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
+  connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
   datadog_flutter_plugin: de391eba42569ec1d8282aa1c49b4172603acc90
   datadog_webview_tracking: 7de2f94cb36dbb00203468d941e89ec7cbc47226
   DatadogCore: 4cf2a1fe0e60ebcb12a459328f652da6268de140
@@ -83,7 +82,7 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PLCrashReporter: 499c53b0104f95c302d94fd723ebb03c56d9bac8
-  webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
+  webview_flutter_wkwebview: 2a23822e9039b7b1bc52e5add778e5d89ad488d1
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 
