@@ -5,10 +5,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-Future<String> shell_run(String command, List<String> args,
+Future<String> shellRun(String command, List<String> args,
     {bool writeStdOut = false,
-    Stream<List<int>>? stdIn = null,
-    String? workingDirectory = null}) async {
+    Stream<List<int>>? stdIn,
+    String? workingDirectory}) async {
   print("Running \$ $command ${args.join(' ')}");
 
   var process =

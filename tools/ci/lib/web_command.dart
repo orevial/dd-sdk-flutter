@@ -28,11 +28,11 @@ class WebCommand extends Command {
 
     if (args['extract'] as bool) {
       print('📖 Unzipping chrome at .tmp/chrome.zip');
-      await shell_run('unzip', ['chrome.zip'],
+      await shellRun('unzip', ['chrome.zip'],
           writeStdOut: true, workingDirectory: '.tmp');
 
       print('📖 Unzipping driver at .tmp/chromedriver.zip');
-      await shell_run('unzip', ['chromedriver.zip'],
+      await shellRun('unzip', ['chromedriver.zip'],
           writeStdOut: true, workingDirectory: '.tmp');
     }
   }
