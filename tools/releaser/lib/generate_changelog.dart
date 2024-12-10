@@ -16,6 +16,13 @@ class GenerateChangelogCommand extends Command {
   @override
   Future<bool> run(CommandArguments args, Logger logger) async {
     final lastReleaseSha = await _findLastReleaseSha(args);
+    if (lastReleaseSha == null) {
+      Logger.root.shout(
+          '⚠️ Could not find last release! Hopefully this is a new package!.');
+      Logger.root.shout(
+          '‼️ Changelogs cannot be generated for an initial release! Make sure you have what you need in there.');
+      return _waitForConfirmation(logger);
+    }
 
     final commits = await _getCommits(args, '$lastReleaseSha..HEAD');
 
@@ -56,6 +63,11 @@ class GenerateChangelogCommand extends Command {
         'Verify the CHANGELOG.md changes and add changes from iOS and Android Native SDK updates.');
     print(
         'For reference iOS SDK will be updated to ${args.iOSRelease} and Android SDK will be updated to ${args.androidRelease}.');
+
+    return _waitForConfirmation(logger);
+  }
+
+  bool _waitForConfirmation(Logger logger) {
     print('Ready to continue? ([Y]es, [N]o): ');
 
     final input = stdin.readLineSync();
@@ -76,11 +88,13 @@ class GenerateChangelogCommand extends Command {
     return true;
   }
 
-  Future<String> _findLastReleaseSha(CommandArguments args) async {
+  Future<String?> _findLastReleaseSha(CommandArguments args) async {
     final packageTags = await args.gitDir
         .tags()
         .where((t) => t.tag.startsWith('${args.packageName}/'))
         .toList();
+
+    if (packageTags.isEmpty) return null;
 
     return packageTags.last.objectSha;
   }
