@@ -105,13 +105,16 @@ void main(List<String> arguments) async {
     versionBumpType = VersionBumpType.prerelease;
   }
 
+  final isInitialRelease = commandArgs.version == '1.0.0';
+
   final commands = <Command>[
     ValidateReleaseCommand(),
     CreateBranchCommand(choreBranch),
     GenerateChangelogCommand(),
     UpdateVersionsCommand(),
     CommitChangesCommand(
-        'chore: Preparing for release of ${commandArgs.packageName} ${commandArgs.version}.'),
+        'chore: Preparing for release of ${commandArgs.packageName} ${commandArgs.version}.',
+        noChangesOkay: isInitialRelease),
     CreateReleaseBranchCommand(),
     RemoveDependencyOverridesCommand(),
     RemovePodOverridesCommand(),
