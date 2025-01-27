@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// we can detect with the [RumUserActionDetector]. The detector is already
 /// at the root of the application.
 class RumUserActionsScreen extends StatefulWidget {
-  const RumUserActionsScreen({Key? key}) : super(key: key);
+  const RumUserActionsScreen({super.key});
 
   @override
   State<RumUserActionsScreen> createState() => _RumUserActionsScreenState();

@@ -7,7 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 /// with `datadog_tracking_http_client` remember to ignore your GraphQL endpoint
 /// by providing it to [TrackingExtension.enableHttpTracking.ignoreUrlPatterns]
 class GraphQlScreen extends StatefulWidget {
-  const GraphQlScreen({Key? key}) : super(key: key);
+  const GraphQlScreen({super.key});
 
   @override
   State<GraphQlScreen> createState() => _GraphQlScreenState();

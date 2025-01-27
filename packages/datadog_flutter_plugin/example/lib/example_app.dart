@@ -19,7 +19,7 @@ class NavItem {
 }
 
 class ExampleApp extends StatefulWidget {
-  const ExampleApp({Key? key}) : super(key: key);
+  const ExampleApp({super.key});
 
   @override
   State<ExampleApp> createState() => _ExampleAppState();
