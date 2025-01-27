@@ -6,13 +6,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../datadog_flutter_plugin.dart';
-import '../internal_logger.dart';
+import '../../datadog_internal.dart';
+import '../time_provider.dart';
 import 'ddrum_platform_interface.dart';
 
 class DdRumMethodChannel extends DdRumPlatform {
   @visibleForTesting
   final MethodChannel methodChannel =
       const MethodChannel('datadog_sdk_flutter.rum');
+
+  @visibleForTesting
+  DatadogTimeProvider timeProvider = defaultTimeProvider;
 
   @override
   Future<void> enable(
@@ -56,17 +60,32 @@ class DdRumMethodChannel extends DdRumPlatform {
   @override
   Future<void> startView(
       String key, String name, Map<String, Object?> attributes) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod(
       'startView',
-      {'key': key, 'name': name, 'attributes': attributes},
+      {
+        'key': key,
+        'name': name,
+        'attributes': {
+          ...attributes,
+          DatadogPlatformAttributeKey.timestamp: timestamp,
+        }
+      },
     );
   }
 
   @override
   Future<void> stopView(String key, Map<String, Object?> attributes) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod(
       'stopView',
-      {'key': key, 'attributes': attributes},
+      {
+        'key': key,
+        'attributes': {
+          ...attributes,
+          DatadogPlatformAttributeKey.timestamp: timestamp,
+        }
+      },
     );
   }
 
@@ -77,23 +96,31 @@ class DdRumMethodChannel extends DdRumPlatform {
     String url, [
     Map<String, Object?> attributes = const {},
   ]) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod('startResource', {
       'key': key,
       'httpMethod': httpMethod.toString(),
       'url': url,
-      'attributes': attributes
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      },
     });
   }
 
   @override
   Future<void> stopResource(String key, int? statusCode, RumResourceType kind,
-      [int? size, Map<String, Object?>? attributes = const {}]) {
+      [int? size, Map<String, Object?> attributes = const {}]) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod('stopResource', {
       'key': key,
       'statusCode': statusCode,
       'kind': kind.toString(),
       'size': size,
-      'attributes': attributes
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      },
     });
   }
 
@@ -111,11 +138,15 @@ class DdRumMethodChannel extends DdRumPlatform {
     String type, [
     Map<String, Object?> attributes = const {},
   ]) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod('stopResourceWithError', {
       'key': key,
       'message': message,
       'type': type,
-      'attributes': attributes,
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      },
     });
   }
 
@@ -145,37 +176,59 @@ class DdRumMethodChannel extends DdRumPlatform {
       StackTrace? stackTrace,
       String? errorType,
       Map<String, Object?> attributes) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod('addError', {
       'message': message,
       'source': source.toString(),
       'stackTrace': stackTrace?.toString(),
       'errorType': errorType,
-      'attributes': attributes
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      },
     });
   }
 
   @override
   Future<void> addAction(
       RumActionType type, String? name, Map<String, Object?> attributes) {
+    final timestamp = timeProvider();
     return methodChannel.invokeMethod('addAction', {
       'type': type.toString(),
       'name': name,
-      'attributes': attributes,
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      },
     });
   }
 
   @override
   Future<void> startAction(
       RumActionType type, String name, Map<String, Object?> attributes) {
-    return methodChannel.invokeMethod('startAction',
-        {'type': type.toString(), 'name': name, 'attributes': attributes});
+    final timestamp = timeProvider();
+    return methodChannel.invokeMethod('startAction', {
+      'type': type.toString(),
+      'name': name,
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      },
+    });
   }
 
   @override
   Future<void> stopAction(
       RumActionType type, String name, Map<String, Object?> attributes) {
-    return methodChannel.invokeMethod('stopAction',
-        {'type': type.toString(), 'name': name, 'attributes': attributes});
+    final timestamp = timeProvider();
+    return methodChannel.invokeMethod('stopAction', {
+      'type': type.toString(),
+      'name': name,
+      'attributes': {
+        ...attributes,
+        DatadogPlatformAttributeKey.timestamp: timestamp,
+      }
+    });
   }
 
   @override

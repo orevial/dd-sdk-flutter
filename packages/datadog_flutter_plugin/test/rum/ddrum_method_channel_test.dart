@@ -28,8 +28,17 @@ void main() {
   late DdRumMethodChannel ddRumPlatform;
   final List<MethodCall> log = [];
 
+  int nextTimestamp = 0;
+  final random = Random();
+  void randomizeTimestamp() {
+    nextTimestamp = random.nextInt(1 << 32);
+  }
+
   setUp(() {
     ddRumPlatform = DdRumMethodChannel();
+    ddRumPlatform.timeProvider = () {
+      return nextTimestamp;
+    };
     ambiguate(TestDefaultBinaryMessengerBinding.instance)
         ?.defaultBinaryMessenger
         .setMockMethodCallHandler(ddRumPlatform.methodChannel, (message) {
@@ -55,24 +64,32 @@ void main() {
   });
 
   test('startView calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.startView('my_key', 'my_name', {'attribute': 'value'});
 
     expect(log, [
       isMethodCall('startView', arguments: {
         'key': 'my_key',
         'name': 'my_name',
-        'attributes': {'attribute': 'value'}
+        'attributes': {
+          'attribute': 'value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('stopView calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.stopView('my_key', {'stop_attribute': 'my_value'});
 
     expect(log, [
       isMethodCall('stopView', arguments: {
         'key': 'my_key',
-        'attributes': {'stop_attribute': 'my_value'}
+        'attributes': {
+          'stop_attribute': 'my_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
@@ -94,6 +111,7 @@ void main() {
   });
 
   test('startResource calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.startResource('resource_key', RumHttpMethod.get,
         'https://fakeresource.com/url', {'attribute_key': 'attribute_value'});
 
@@ -102,12 +120,16 @@ void main() {
         'key': 'resource_key',
         'httpMethod': 'RumHttpMethod.get',
         'url': 'https://fakeresource.com/url',
-        'attributes': {'attribute_key': 'attribute_value'}
+        'attributes': {
+          'attribute_key': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('stopResource calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.stopResource('resource_key', 202, RumResourceType.image,
         41123, {'attribute_key': 'attribute_value'});
 
@@ -117,12 +139,16 @@ void main() {
         'statusCode': 202,
         'kind': 'RumResourceType.image',
         'size': 41123,
-        'attributes': {'attribute_key': 'attribute_value'}
+        'attributes': {
+          'attribute_key': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('stopResourceWithError calls to platform with info', () async {
+    randomizeTimestamp();
     final exception = TimeoutException(
         'Timeout retrieving resource', const Duration(seconds: 5));
     await ddRumPlatform.stopResourceWithError(
@@ -133,12 +159,16 @@ void main() {
         'key': 'resource_key',
         'message': exception.toString(),
         'type': exception.runtimeType.toString(),
-        'attributes': {'attribute_key': 'attribute_value'}
+        'attributes': {
+          'attribute_key': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('stopResourceWithErrorInfo calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.stopResourceWithErrorInfo(
         'resource_key',
         'Exception message',
@@ -150,12 +180,16 @@ void main() {
         'key': 'resource_key',
         'message': 'Exception message',
         'type': 'Exception type',
-        'attributes': {'attribute_key': 'attribute_value'}
+        'attributes': {
+          'attribute_key': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('addError calls to platform with info', () async {
+    randomizeTimestamp();
     final exception = TimeoutException(
         'Timeout retrieving resource', const Duration(seconds: 5));
     await ddRumPlatform.addError(exception, RumErrorSource.source, null,
@@ -169,12 +203,13 @@ void main() {
     expect(call.arguments['stackTrace'], isNull);
     expect(call.arguments['errorType'], 'error_type');
     expect(call.arguments['attributes'], {
-      // '_dd.error.source_type': 'flutter'
-      'attribute_key': 'attribute_value'
+      'attribute_key': 'attribute_value',
+      '_dd.timestamp': nextTimestamp,
     });
   });
 
   test('addErrorInfo calls to platform with info', () async {
+    randomizeTimestamp();
     await ddRumPlatform.addErrorInfo('Exception message', RumErrorSource.source,
         null, 'error_type', {'attribute_key': 'attribute_value'});
 
@@ -186,12 +221,13 @@ void main() {
     expect(call.arguments['stackTrace'], isNull);
     expect(call.arguments['errorType'], 'error_type');
     expect(call.arguments['attributes'], {
-      // '_dd.error.source_type': 'flutter'
-      'attribute_key': 'attribute_value'
+      'attribute_key': 'attribute_value',
+      '_dd.timestamp': nextTimestamp,
     });
   });
 
   test('addError passes stack trace string', () async {
+    randomizeTimestamp();
     final stackTrace = StackTrace.current;
     final exception = TimeoutException(
         'Timeout retrieving resource', const Duration(seconds: 5));
@@ -206,12 +242,13 @@ void main() {
     expect(call.arguments['stackTrace'], stackTrace.toString());
     expect(call.arguments['errorType'], isNull);
     expect(call.arguments['attributes'], {
-      // '_dd.error.source_type': 'flutter'
-      'attribute_key': 'attribute_value'
+      'attribute_key': 'attribute_value',
+      '_dd.timestamp': nextTimestamp,
     });
   });
 
   test('addErrorInfo passes stack trace string', () async {
+    randomizeTimestamp();
     final stackTrace = StackTrace.current;
     await ddRumPlatform.addErrorInfo('Exception message', RumErrorSource.source,
         stackTrace, 'error_type', {'attribute_key': 'attribute_value'});
@@ -224,12 +261,13 @@ void main() {
     expect(call.arguments['stackTrace'], stackTrace.toString());
     expect(call.arguments['errorType'], 'error_type');
     expect(call.arguments['attributes'], {
-      // '_dd.error.source_type': 'flutter'
-      'attribute_key': 'attribute_value'
+      'attribute_key': 'attribute_value',
+      '_dd.timestamp': nextTimestamp,
     });
   });
 
   test('addAction calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.addAction(RumActionType.tap, 'fake_user_action', {
       'attribute_name': 'attribute_value',
     });
@@ -238,12 +276,16 @@ void main() {
       isMethodCall('addAction', arguments: {
         'type': 'RumActionType.tap',
         'name': 'fake_user_action',
-        'attributes': {'attribute_name': 'attribute_value'}
+        'attributes': {
+          'attribute_name': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('startAction calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.startAction(RumActionType.scroll, 'user_action_scroll',
         {'attribute_name': 'attribute_value'});
 
@@ -251,12 +293,16 @@ void main() {
       isMethodCall('startAction', arguments: {
         'type': 'RumActionType.scroll',
         'name': 'user_action_scroll',
-        'attributes': {'attribute_name': 'attribute_value'}
+        'attributes': {
+          'attribute_name': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
 
   test('stopAction calls to platform', () async {
+    randomizeTimestamp();
     await ddRumPlatform.stopAction(RumActionType.swipe, 'user_action_swipe',
         {'attribute_name': 'attribute_value'});
 
@@ -264,7 +310,10 @@ void main() {
       isMethodCall('stopAction', arguments: {
         'type': 'RumActionType.swipe',
         'name': 'user_action_swipe',
-        'attributes': {'attribute_name': 'attribute_value'}
+        'attributes': {
+          'attribute_name': 'attribute_value',
+          '_dd.timestamp': nextTimestamp,
+        }
       })
     ]);
   });
