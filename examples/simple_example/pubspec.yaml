@@ -22,11 +22,12 @@ dependencies:
   datadog_gql_link:
     path: ../../packages/datadog_gql_link
     
-  go_router: ^7.0.0
+  go_router: ^14.7.0
   path_provider: ^2.1.0
   flutter_dotenv: ^5.1.0
   transparent_image: ^2.0.1
   graphql_flutter: ^5.1.2
+
 dependency_overrides:
   datadog_flutter_plugin:
     path: ../../packages/datadog_flutter_plugin
@@ -34,7 +35,7 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ">= 1.0.0"
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true

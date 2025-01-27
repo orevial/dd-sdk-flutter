@@ -12,7 +12,7 @@ class NetworkScreen extends StatelessWidget {
     'https://imgix.datadoghq.com/img/about/presskit/kit/press_kit.png'
   ];
 
-  const NetworkScreen({Key? key}) : super(key: key);
+  const NetworkScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
