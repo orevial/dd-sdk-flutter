@@ -179,6 +179,18 @@ class DatadogRumPluginTests: XCTestCase {
         XCTAssertEqual(config?.appHangThreshold, appHangThreshold)
     }
 
+    func testRumConfiguration_WithInitialResourceThreshold_IsSetCorrectly() throws {
+        let initialResourceThreshold = Double.mockRandom()
+        let encoded: [String: Any?] = [
+            "applicationId": "fake-application-id",
+            "initialResourceThreshold": initialResourceThreshold
+        ]
+
+        let config = RUM.Configuration.init(fromEncoded: encoded)
+        let predicate = try XCTUnwrap(config?.networkSettledResourcePredicate as? TimeBasedTNSResourcePredicate)
+        XCTAssertEqual(predicate.threshold, initialResourceThreshold)
+    }
+
     func testRepeatEnable_FromMethodChannelSameOptions_DoesNothing() {
         // Uninitialize plugin
         plugin?.inject(rum: nil)
@@ -610,6 +622,8 @@ class MockRUMMonitor: RUMMonitorProtocol, RUMCommandSubscriber {
         case stopAction(type: RUMActionType, name: String?, attributes: [AttributeKey: AttributeValue])
         case addAttribute(forKey: AttributeKey, value: AttributeValue)
         case removeAttribute(forKey: AttributeKey)
+        case addAttributes(attributes: [DatadogInternal.AttributeKey: any DatadogInternal.AttributeValue])
+        case removeAttributes(forKeys: [AttributeKey])
     }
 
     var callLog: [MethodCall] = []
@@ -692,6 +706,14 @@ class MockRUMMonitor: RUMMonitorProtocol, RUMCommandSubscriber {
 
     func removeAttribute(forKey key: AttributeKey) {
         callLog.append(.removeAttribute(forKey: key))
+    }
+
+    func addAttributes(_ attributes: [AttributeKey: any AttributeValue]) {
+        callLog.append(.addAttributes(attributes: attributes))
+    }
+
+    func removeAttributes(forKeys keys: [AttributeKey]) {
+        callLog.append(.removeAttributes(forKeys: keys))
     }
 
     func addAction(type: RUMActionType, name: String,

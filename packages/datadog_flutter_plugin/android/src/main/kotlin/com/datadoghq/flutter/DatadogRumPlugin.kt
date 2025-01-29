@@ -22,6 +22,7 @@ import com.datadog.android.rum.RumPerformanceMetric
 import com.datadog.android.rum.RumResourceKind
 import com.datadog.android.rum._RumInternalProxy
 import com.datadog.android.rum.configuration.VitalsUpdateFrequency
+import com.datadog.android.rum.metric.networksettled.TimeBasedInitialResourceIdentifier
 import com.datadog.android.rum.tracking.ViewTrackingStrategy
 import com.datadog.android.telemetry.model.TelemetryConfigurationEvent
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -30,6 +31,8 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import java.lang.ClassCastException
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
 
 class DatadogRumPlugin : MethodChannel.MethodCallHandler {
     companion object RumParameterNames {
@@ -480,6 +483,10 @@ fun RumConfiguration.Builder.withEncoded(encoded: Map<String, Any?>): RumConfigu
     }
     (encoded["trackNonFatalAnrs"] as? Boolean)?.let {
         builder = builder.trackNonFatalAnrs(it)
+    }
+    (encoded["initialResourceThreshold"] as? Number)?.let {
+        val milliseconds = it.toDouble().seconds.inWholeMilliseconds
+        builder = builder.setInitialResourceIdentifier(TimeBasedInitialResourceIdentifier(milliseconds))
     }
     (encoded["customEndpoint"] as? String)?.let {
         builder = builder.useCustomEndpoint(it)
