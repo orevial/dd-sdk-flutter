@@ -157,7 +157,7 @@ class DatadogRumConfiguration {
   double? appHangThreshold;
 
   /// The amount of time after a view starts where a Resource should be
-  /// considered when calculating Time to Network-Settled (TNS).  TNS will be
+  /// considered when calculating Time to Network-Settled (TNS). TNS will be
   /// calculated using all resources that start withing the specified threshold,
   /// in seconds.
   ///
