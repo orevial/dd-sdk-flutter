@@ -622,7 +622,7 @@ class MockRUMMonitor: RUMMonitorProtocol, RUMCommandSubscriber {
         case stopAction(type: RUMActionType, name: String?, attributes: [AttributeKey: AttributeValue])
         case addAttribute(forKey: AttributeKey, value: AttributeValue)
         case removeAttribute(forKey: AttributeKey)
-        case addAttributes(attributes: [DatadogInternal.AttributeKey: any DatadogInternal.AttributeValue])
+        case addAttributes(attributes: [AttributeKey : any AttributeValue])
         case removeAttributes(forKeys: [AttributeKey])
     }
 
@@ -709,6 +709,7 @@ class MockRUMMonitor: RUMMonitorProtocol, RUMCommandSubscriber {
     }
 
     func addAttributes(_ attributes: [AttributeKey: any AttributeValue]) {
+    func addAttributes(_ attributes: [AttributeKey : any AttributeValue]) {
         callLog.append(.addAttributes(attributes: attributes))
     }
 

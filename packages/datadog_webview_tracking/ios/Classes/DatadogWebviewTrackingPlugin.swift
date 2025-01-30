@@ -34,7 +34,7 @@ public class DatadogWebViewTrackingPlugin: NSObject, FlutterPlugin {
         if call.method == "initWebView" {
             if let number = arguments["webViewIdentifier"] as? NSNumber,
                let allowedHosts = arguments["allowedHosts"] as? [String] {
-                let webViewIdentifier = number.intValue
+                let webViewIdentifier = number.int64Value
 
                 // swiftlint:disable:next todo
                 // TODO: Add to app scenario, search for a FlutterViewController to get the
@@ -42,7 +42,7 @@ public class DatadogWebViewTrackingPlugin: NSObject, FlutterPlugin {
                 if let pluginRegistry = UIApplication.shared.delegate as? FlutterPluginRegistry,
                    let webview = FWFWebViewFlutterWKWebViewExternalAPI.webView(
                         forIdentifier: webViewIdentifier,
-                        with: pluginRegistry) {
+                        withPluginRegistry: pluginRegistry) {
                     WebViewTracking.enable(webView: webview, hosts: Set(allowedHosts))
                 }
                 result(nil)
