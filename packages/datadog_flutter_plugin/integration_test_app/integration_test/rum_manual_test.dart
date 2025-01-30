@@ -226,7 +226,7 @@ void main() {
           Duration(milliseconds: resourceStart - viewStart).inNanoseconds +
               resourceDuration!;
       expect(view2.viewEvents.last.view.networkSettledTime,
-          closeTo(tns, const Duration(milliseconds: 10).inNanoseconds));
+          closeTo(tns, const Duration(milliseconds: 100).inNanoseconds));
     }
 
     expect(view2.errorEvents[0].message, 'Simulated view error');

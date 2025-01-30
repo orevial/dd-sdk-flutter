@@ -31,7 +31,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import java.lang.ClassCastException
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 
 class DatadogRumPlugin : MethodChannel.MethodCallHandler {
@@ -469,6 +468,7 @@ object NoOpViewTrackingStrategy : ViewTrackingStrategy {
     }
 }
 
+@Suppress("ComplexMethod")
 fun RumConfiguration.Builder.withEncoded(encoded: Map<String, Any?>): RumConfiguration.Builder {
     var builder = this
 
@@ -486,7 +486,9 @@ fun RumConfiguration.Builder.withEncoded(encoded: Map<String, Any?>): RumConfigu
     }
     (encoded["initialResourceThreshold"] as? Number)?.let {
         val milliseconds = it.toDouble().seconds.inWholeMilliseconds
-        builder = builder.setInitialResourceIdentifier(TimeBasedInitialResourceIdentifier(milliseconds))
+        builder = builder.setInitialResourceIdentifier(
+            TimeBasedInitialResourceIdentifier(milliseconds)
+        )
     }
     (encoded["customEndpoint"] as? String)?.let {
         builder = builder.useCustomEndpoint(it)
