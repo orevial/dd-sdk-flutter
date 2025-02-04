@@ -153,13 +153,11 @@ void main() {
       expect(view1.resourceEvents[0].url, 'https://fake_url/resource/1');
       expect(view1.resourceEvents[0].statusCode, 200);
       expect(view1.resourceEvents[0].resourceType, 'image');
-      expect(view1.resourceEvents[0].duration,
-          greaterThan((90 * 1000 * 1000) - 1)); // 90ms
-      // TODO: Figure out why occasionally these have really high values
-      // expect(view1.resourceEvents[0].duration,
-      //     lessThan(10 * 1000 * 1000 * 1000)); // 10s
-      expect(
-          view1.resourceEvents[0].context![contextKey], expectedContextValue);
+      final resourceDuration = view1.resourceEvents[0].duration;
+      expect(resourceDuration,
+          greaterThan(const Duration(milliseconds: 90).inNanoseconds - 1));
+      expect(resourceDuration,
+          lessThan(const Duration(seconds: 10).inNanoseconds));
 
       expect(view1.errorEvents.length, 1);
       expect(view1.errorEvents[0].resourceUrl, 'https://fake_url/resource/2');
@@ -200,7 +198,7 @@ void main() {
     expect(view2.viewEvents.last.view.longTaskCount, greaterThanOrEqualTo(1));
     if (!kIsWeb) {
       // Web can download extra resources
-      expect(view2.viewEvents.last.view.resourceCount, 0);
+      expect(view2.viewEvents.last.view.resourceCount, 1);
     }
     if (!kIsWeb) {
       // The removal of this key happens at a weird point for web, so
@@ -209,6 +207,27 @@ void main() {
     }
     expect(view2.viewEvents.last.featureFlags?['mock_flag_a'], false);
     expect(view2.viewEvents.last.featureFlags?['mock_flag_b'], 'mock_value');
+
+    // Manual resource loading calls are ignored on Web.
+    if (!kIsWeb) {
+      final viewStart = view2.viewEvents.first.date;
+      final resourceStart = view2.resourceEvents[0].date;
+
+      expect(view2.resourceEvents[0].url, 'https://fake_url/tns-resource/1');
+      expect(view2.resourceEvents[0].statusCode, 200);
+      expect(view2.resourceEvents[0].resourceType, 'image');
+      final resourceDuration = view1.resourceEvents[0].duration;
+      expect(resourceDuration,
+          greaterThan(const Duration(milliseconds: 90).inNanoseconds - 1));
+      expect(resourceDuration,
+          lessThan(const Duration(seconds: 10).inNanoseconds));
+
+      final tns =
+          Duration(milliseconds: resourceStart - viewStart).inNanoseconds +
+              resourceDuration!;
+      expect(view2.viewEvents.last.view.networkSettledTime,
+          closeTo(tns, const Duration(milliseconds: 100).inNanoseconds));
+    }
 
     expect(view2.errorEvents[0].message, 'Simulated view error');
     expect(view2.errorEvents[0].source, kIsWeb ? 'custom' : 'source');

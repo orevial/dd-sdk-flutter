@@ -185,6 +185,8 @@ class _RumManualInstrumentation2State extends State<RumManualInstrumentation2>
   void didPush() {
     DatadogSdk.instance.rum?.startView(_viewKey, _viewName);
 
+    _simulateResourceDownload();
+
     DatadogSdk.instance.rum?.addFeatureFlagEvaluation('mock_flag_a', false);
     DatadogSdk.instance.rum
         ?.addFeatureFlagEvaluation('mock_flag_b', 'mock_value');
@@ -216,6 +218,18 @@ class _RumManualInstrumentation2State extends State<RumManualInstrumentation2>
         ),
       ),
     );
+  }
+
+  void _simulateResourceDownload() async {
+    final rum = DatadogSdk.instance.rum;
+
+    var simulatedResourceKey1 = '/tns-resource/1';
+
+    rum?.startResource(simulatedResourceKey1, RumHttpMethod.get,
+        '$fakeRootUrl$simulatedResourceKey1');
+
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    rum?.stopResource(simulatedResourceKey1, 200, RumResourceType.image);
   }
 
   Future<void> _simulateActions() async {
