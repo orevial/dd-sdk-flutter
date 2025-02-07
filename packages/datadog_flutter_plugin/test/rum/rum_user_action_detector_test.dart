@@ -453,6 +453,56 @@ void main() {
     verifyNoMoreInteractions(mockRum);
   });
 
+  testWidgets('tap BottomNavigationBar reports child annotation',
+      (tester) async {
+    final mockRum = MockDdRum();
+
+    final app = RumUserActionDetector(
+      rum: mockRum,
+      child: MaterialApp(
+        home: Scaffold(
+          body: const Center(
+            child: Text('Test'),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: RumUserActionAnnotation(
+                  description: 'Custom Annotation',
+                  attributes: {'custom_attribute': 12345},
+                  child: Icon(Icons.business),
+                ),
+                label: 'Business',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.school),
+                label: 'School',
+              ),
+            ],
+            currentIndex: 0,
+            onTap: (_) {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(app);
+
+    final navItem = find.byIcon(Icons.business).first;
+    await tester.tap(navItem);
+
+    verify(() => mockRum.addAction(
+          RumActionType.tap,
+          'BottomNavigationBarItem(Custom Annotation)',
+          {'custom_attribute': 12345},
+        ));
+    verifyNoMoreInteractions(mockRum);
+  });
+
   testWidgets('tap TabBar reports tap', (tester) async {
     final mockRum = MockDdRum();
 
