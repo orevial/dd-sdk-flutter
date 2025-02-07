@@ -6,7 +6,7 @@ import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:flutter/material.dart';
 
 class RumScreen extends StatefulWidget {
-  const RumScreen({Key? key}) : super(key: key);
+  const RumScreen({super.key});
 
   @override
   State<RumScreen> createState() => _RumScreenState();

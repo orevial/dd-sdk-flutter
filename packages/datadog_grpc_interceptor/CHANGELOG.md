@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
+* Support grpc 4.x. See [#704](https://github.com/DataDog/dd-sdk-flutter/issues/704).
 * Add support for `TraceContextInjection` configuration.
 
 ## 1.1.0

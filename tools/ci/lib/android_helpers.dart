@@ -49,7 +49,7 @@ Future<void> killAllEmulators() async {
   final runningDevices = await _getRunningDevices();
 
   for (final device in runningDevices.entries) {
-    await shell_run(adbCommand, ['-s', device.key, 'emu', 'kill'],
+    await shellRun(adbCommand, ['-s', device.key, 'emu', 'kill'],
         writeStdOut: true);
   }
 }
@@ -84,7 +84,7 @@ Future<bool> launchAndroidEmulator({
     final package = 'system-images;android-$apiLevel;$avdTag;$avdAbi';
     if (shouldUpdate) {
       print("Updating emulators with sdkmanager");
-      await shell_run(sdkManager, ["--verbose", "emulator"],
+      await shellRun(sdkManager, ["--verbose", "emulator"],
           writeStdOut: true,
           stdIn: Stream.fromIterable(yesList).transform(
             utf8.encoder,
@@ -92,7 +92,7 @@ Future<bool> launchAndroidEmulator({
     }
 
     print("Updating system-image packages");
-    await shell_run(
+    await shellRun(
       sdkManager,
       ["--verbose", package],
       writeStdOut: true,
@@ -100,7 +100,7 @@ Future<bool> launchAndroidEmulator({
     );
 
     print("Creating device");
-    await shell_run(
+    await shellRun(
       avdManager,
       ['create', 'avd', '-n', emulatorName, '--package', package],
       writeStdOut: true,
@@ -124,7 +124,7 @@ Future<bool> launchAndroidEmulator({
 
 Future<bool> _emulatorExists(String emulatorName) async {
   print("Checking for existing Android emulator named $emulatorName...");
-  final result = await shell_run(avdManager, ['list', 'avd', '--compact']);
+  final result = await shellRun(avdManager, ['list', 'avd', '--compact']);
   final emulators = result.split('\n');
   print('Found emulaors: $emulators');
 
@@ -135,7 +135,7 @@ Future<Map<String, String>> _getRunningDevices() async {
   final emulatorRegex = RegExp(r'^(?<emulator>emulator-\d*)[\s+](?<state>.*)');
 
   final result = <String, String>{};
-  final devicesLog = await shell_run(adbCommand, ['devices']);
+  final devicesLog = await shellRun(adbCommand, ['devices']);
   for (var line in devicesLog.split('\n')) {
     final match = emulatorRegex.firstMatch(line);
     if (match != null) {
@@ -149,7 +149,7 @@ Future<Map<String, String>> _getRunningDevices() async {
 Future<bool> _startEmulator(String emulatorName) async {
   print("Starting device");
 
-  var process = await Process.start(
+  await Process.start(
       emulatorCmd,
       [
         "@$emulatorName",

@@ -36,6 +36,10 @@ public extension RUM.Configuration {
 
         telemetrySampleRate = (encoded["telemetrySampleRate"] as? NSNumber)?.floatValue ?? 20.0
 
+        if let initialResourceThreshold = (encoded["initialResourceThreshold"] as? NSNumber)?.doubleValue {
+            self.networkSettledResourcePredicate = TimeBasedTNSResourcePredicate(threshold: initialResourceThreshold)
+        }
+
         if let additionalConfig = encoded["additionalConfig"] as? [String: Any?] {
             if let sampleRateArg = (additionalConfig["_dd.telemetry.configuration_sample_rate"] as? NSNumber) {
                 self._internal_mutation({

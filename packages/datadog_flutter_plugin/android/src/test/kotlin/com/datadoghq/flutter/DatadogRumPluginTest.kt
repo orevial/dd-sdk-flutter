@@ -8,6 +8,7 @@ package com.datadoghq.flutter
 import android.util.Log
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
 import com.datadog.android.Datadog
 import com.datadog.android.log.Logs
 import com.datadog.android.log.LogsConfiguration
@@ -20,6 +21,7 @@ import com.datadog.android.rum.RumPerformanceMetric
 import com.datadog.android.rum.RumResourceKind
 import com.datadog.android.rum._RumInternalProxy
 import com.datadog.android.rum.configuration.VitalsUpdateFrequency
+import com.datadog.android.rum.metric.networksettled.TimeBasedInitialResourceIdentifier
 import fr.xgouchet.elmyr.Forge
 import fr.xgouchet.elmyr.annotation.BoolForgery
 import fr.xgouchet.elmyr.annotation.FloatForgery
@@ -42,6 +44,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @ExtendWith(ForgeExtension::class)
 @Suppress("LargeClass")
@@ -164,6 +168,7 @@ class DatadogRumPluginTest {
     fun `M decode configuration W withEncoded is called`(
         @FloatForgery(min = 0.0f, max = 100.0f) sessionSampleRate: Float,
         @FloatForgery(min = 0.1f, max = 5.0f) longTaskThreshold: Float,
+        @FloatForgery(min = 0.1f, max = 4.0f) initialResourceThreshold: Float,
         @BoolForgery trackFrustration: Boolean,
         @StringForgery endpoint: String,
         @FloatForgery(min = 0.0f, max = 100.0f) telemetrySampleRate: Float,
@@ -177,6 +182,7 @@ class DatadogRumPluginTest {
             "longTaskThreshold" to longTaskThreshold,
             "trackFrustrations" to trackFrustration,
             "trackNonFatalAnrs" to trackNonFatalAnrs,
+            "initialResourceThreshold" to initialResourceThreshold,
             "customEndpoint" to endpoint,
             "vitalsUpdateFrequency" to "VitalsFrequency.frequent",
             "telemetrySampleRate" to telemetrySampleRate,
@@ -198,6 +204,12 @@ class DatadogRumPluginTest {
             // If null, default shouldn't be changed. Tests are run on a version that enables ANR tracking by default
             assertThat(featureConfiguration.getPrivate("trackNonFatalAnrs")).isEqualTo(true)
         }
+        val initialResourceIdentifier = featureConfiguration.getPrivate("initialResourceIdentifier") as? TimeBasedInitialResourceIdentifier
+        assertThat(initialResourceIdentifier).isNotNull()
+        // The threshold is converted to configured in milliseconds, but held in nanoseconds.
+        val millisecondThreshold = initialResourceThreshold.toDouble().seconds.inWholeMilliseconds
+        assertThat(initialResourceIdentifier?.getPrivate("timeThresholdInNanoSeconds"))
+            .isEqualTo(TimeUnit.MILLISECONDS.toNanos(millisecondThreshold))
         assertThat(featureConfiguration.getPrivate("customEndpointUrl")).isEqualTo(endpoint)
         assertThat(featureConfiguration.getPrivate("vitalsMonitorUpdateFrequency"))
             .isEqualTo(VitalsUpdateFrequency.FREQUENT)

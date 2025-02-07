@@ -156,6 +156,14 @@ class DatadogRumConfiguration {
   /// Defaults to disabled (`null`).
   double? appHangThreshold;
 
+  /// The amount of time after a view starts where a Resource should be
+  /// considered when calculating Time to Network-Settled (TNS). TNS will be
+  /// calculated using all resources that start withing the specified threshold,
+  /// in seconds.
+  ///
+  /// Defaults to 0.1 seconds.
+  double initialResourceThreshold;
+
   /// Use a custom endpoint for sending RUM data.
   String? customEndpoint;
 
@@ -196,6 +204,7 @@ class DatadogRumConfiguration {
     this.reportFlutterPerformance = false,
     this.trackNonFatalAnrs,
     this.appHangThreshold,
+    this.initialResourceThreshold = 0.1,
     this.customEndpoint,
     this.telemetrySampleRate = 20.0,
     this.viewEventMapper,
@@ -219,6 +228,7 @@ class DatadogRumConfiguration {
       'reportFlutterPerformance': reportFlutterPerformance,
       'trackNonFatalAnrs': trackNonFatalAnrs,
       'appHangThreshold': appHangThreshold,
+      'initialResourceThreshold': initialResourceThreshold,
       'customEndpoint': customEndpoint,
       'telemetrySampleRate': telemetrySampleRate,
       'attachViewEventMapper': viewEventMapper != null,

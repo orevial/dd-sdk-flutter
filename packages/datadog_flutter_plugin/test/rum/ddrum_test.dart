@@ -92,6 +92,7 @@ void main() {
       vitalUpdateFrequency: vitalUpdateFrequency,
       trackNonFatalAnrs: false,
       appHangThreshold: 0.332,
+      initialResourceThreshold: 1.23,
       customEndpoint: customEndpoint,
     );
 
@@ -105,6 +106,7 @@ void main() {
     expect(encoded['trackNonFatalAnrs'], false);
     expect(encoded['appHangThreshold'], 0.332);
     expect(encoded['customEndpoint'], customEndpoint);
+    expect(encoded['initialResourceThreshold'], 1.23);
   });
 
   test('configuration with mapper sets attach*Mapper', () {

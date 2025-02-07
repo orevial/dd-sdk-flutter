@@ -114,7 +114,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: const Icon(Icons.close),
                 onPressed: () async => {
                   await Future.delayed(const Duration(seconds: 5), () {
-                    context.pop();
+                    if (context.mounted) {
+                      context.pop();
+                    }
                   }),
                 },
               ),

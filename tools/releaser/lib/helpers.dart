@@ -50,7 +50,9 @@ Future<void> transformFile(
   logger.finest(' ------- NEW  $filename CONTENTS ------');
   logger.finest(newFileBuffer.toString());
   if (!dryRun) {
-    file.openWrite().write(newFileBuffer);
+    final sync = file.openWrite();
+    sync.write(newFileBuffer);
+    await sync.flush();
     logger.info(' ✏️ Wrote ${file.path}');
   }
 }

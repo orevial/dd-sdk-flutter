@@ -15,7 +15,7 @@ import 'screens/network_screen.dart';
 class MyApp extends StatelessWidget {
   final GraphQLClient graphQLClient;
 
-  MyApp({Key? key, required this.graphQLClient}) : super(key: key);
+  MyApp({super.key, required this.graphQLClient});
 
   final router = GoRouter(
     observers: [DatadogNavigationObserver(datadogSdk: DatadogSdk.instance)],

@@ -92,7 +92,7 @@ extension CrashTypeDescription on CrashType {
 }
 
 class CrashReportingScreen extends StatefulWidget {
-  const CrashReportingScreen({Key? key}) : super(key: key);
+  const CrashReportingScreen({super.key});
 
   @override
   State<CrashReportingScreen> createState() => _CrashReportingScreenState();

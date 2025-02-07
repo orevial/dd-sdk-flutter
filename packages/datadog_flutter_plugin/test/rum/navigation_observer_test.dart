@@ -369,10 +369,10 @@ class SimpleNavigator extends StatelessWidget {
   final String? nextRouteName;
 
   const SimpleNavigator({
-    Key? key,
+    super.key,
     required this.builder,
     this.nextRouteName,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -400,8 +400,8 @@ class SimpleNavigator extends StatelessWidget {
 // child
 class SimpleNamedNavigator extends StatelessWidget {
   const SimpleNamedNavigator({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -427,10 +427,10 @@ class MixedDestination extends StatefulWidget {
   final WidgetBuilder? nextPageBuilder;
 
   const MixedDestination({
-    Key? key,
+    super.key,
     this.info,
     this.nextPageBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<MixedDestination> createState() => _MixedDestinationState();
@@ -471,7 +471,7 @@ class _MixedDestinationState extends State<MixedDestination>
 // This is a simple page with only a Pop button that calls
 // the `Navigator.pop` function
 class SimplePopPage extends StatelessWidget {
-  const SimplePopPage({Key? key}) : super(key: key);
+  const SimplePopPage({super.key});
 
   @override
   Widget build(BuildContext context) {
